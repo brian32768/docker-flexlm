@@ -9,7 +9,7 @@ import re
 from flask import Flask
 from time import sleep
 from datetime import datetime
-from pytz import timezone
+import pytz
 
 app = Flask(__name__)
 
@@ -103,8 +103,8 @@ def process_licenses(fp):
     msg = '<html><body>\n'
 
     # When someone hits reload it's nice to see a change
-    utc = datetime.utcnow()
-    tz  = timezone("America/Los_Angeles")
+    utc = datetime.now()
+    tz  = pytz.timezone("America/Los_Angeles")
     pst = tz.localize(utc)
     msg += '<p>' + str(pst) + '</p>'
     
