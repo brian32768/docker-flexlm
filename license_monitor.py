@@ -11,16 +11,8 @@ from time import sleep
 
 app = Flask(__name__)
 
-# We only care if all licenses are in use
+# Set to True if We only care if all licenses are in use
 SHOWLIMITONLY = True
-
-# Where both the lmutil executable and log files live.
-LMMGR_DIR = 'C:/Program Files (x86)/ArcGIS/LicenseManager/bin'
-
-lmutil = os.path.join(LMMGR_DIR, 'lmutil.exe')
-service_file = os.path.join(LMMGR_DIR, 'service.txt')
-
-args = [lmutil, 'lmstat', '-c', service_file, '-a']
 
 def file_must_exist(f):
     if os.path.exists(f): return
@@ -30,8 +22,23 @@ def file_must_exist(f):
     except:
         raise IOError(msg)
 
-file_must_exist(lmutil)
+try:
+    service_file = sys.argv[1]
+except:
+    service_file = 'service.txt'
+    print("WARNING: Using default service file name")
 file_must_exist(service_file)
+
+try:
+    lmutil = os.environ['LMUTIL']
+    file_must_exist(lmutil)
+    args = [lmutil, 'lmstat', '-c', service_file, '-a']
+except KeyError:
+    print("TEST MODE INVOKED: because no LMUTIL env variable.")
+    lmutil = 'lmutil'
+    args = ["cat", "lmstat.txt"]
+
+
 
 #--- Okay, we have everything we need!
 
@@ -56,7 +63,7 @@ def process_licenses(fp):
     userinfo = {}
 
     for r in fp.readlines():
-        line = r.rstrip()
+        line = r.rstrip().decode('utf-8')
         if not len(line): continue
         #print(line)
 

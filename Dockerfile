@@ -1,5 +1,8 @@
 FROM centos:7
 
+# =================================================================
+# STAGE 1 -- Configure a build host and install the license manager
+
 RUN yum install -y \
  compat-libstdc++-33.i686 \
  compat-libf2c-34.i686 \
@@ -41,7 +44,6 @@ RUN yum install -y \
  mesa-libGL.i686 \
  mesa-libGLU.i686
 
-
 RUN adduser flexlm && \
     mkdir -p /usr/local/share/macrovision/storage && chmod 777 /usr/local/share/macrovision/storage
 
@@ -53,21 +55,41 @@ RUN tar xzvf LicenseManager.tar.gz && \
     cd LicenseManager_Linux && \
     ./Setup -l Yes -m silent
 
-# Dump error messages out
+# Dump messages out so that errors will be visible on the console when building 
 RUN cat arcgis/licensemanager/.Setup/LicenseManager_InstallLog.log
+
+# ===========================================
+# STAGE 2 -- install and run the microservice
 
 # Someday I will pull the files needed to run lmutil out and put them here.
 # I'd need to look at the dynamic libraries and install them in another container. ldd lmutil
 # For now I just install everything right here
 #VOLUME /mnt
 
-# Add the commands to flexlm user's PATH
-RUN echo "export PATH=$PATH:$HOME/arcgis/licensemanager/bin/" > .bashrc
+USER root
+
+# Might not need this section, just following boilerplate on Python 3 for redhat
+RUN yum install -y centos-release-scl
+RUN yum install -y @development
+RUN yum install -y rh-python36
+
+# Add python to the path for flexlm user
+USER flexlm
 ENV LMUTIL /home/flexlm/arcgis/licensemanager/bin/lmutil
 
-# Stage 2, install the microservice
-COPY service.txt .
-#COPY license_monitor.py .
+# Add the commands to flexlm user's PATH
+RUN echo "source /opt/rh/rh-python36/enable" > .bashrc
+RUN echo "export PATH=\$PATH:$HOME/arcgis/licensemanager/bin/" >> .bashrc
 
-# Stage 2, run the microservice
-#CMD [python license_monitor.py ./service.txt]
+RUN /opt/rh/rh-python36/root/bin/python -m venv license_monitor && \
+  source license_monitor/bin/activate && \
+  pip install flask
+
+# Install the microservice and the config file
+COPY service.txt .
+COPY license_monitor.py .
+
+EXPOSE 5000
+
+# Run the microservice
+CMD "./license_monitor/bin/python" "license_monitor.py" "./service.txt"

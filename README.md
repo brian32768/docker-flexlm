@@ -31,6 +31,9 @@ The Dockerfile is currently built on this version:
 
     ArcGIS_License_Manager_Linux_2019_0_169356.tar.gz
 
+You also need a copy of the service.txt file from your license manager. 
+You need to edit the service.txt file so that it has the actual license server host name instead of "This_Host".
+
 If the version number changes you will have to change the Dockerfile.
 
 The requirements doc at ESRI call for RHEL 6 or 7; the Dockerfile uses Centos 7.
@@ -78,7 +81,7 @@ Now you're in a bash shell in the home directory of the 'flexlm' user.
 You can examine install log files and things like that. You should be able
 to execute the lmutil program which is in the LicenseManager/bin folder.
 
-You can run lmutil with this command
+You can now run lmutil with this command
 
     ~/arcgis/licensemanager/bin/lmutil
 
@@ -90,20 +93,24 @@ If it does not then you can remove it yourself with
 
     docker rm lm
 
-    docker run -it --rm -v `pwd`/bin:/mnt --rm --name=lm flexlm cp arcgis/licensemanager/bin/lmutil /mnt
+## Stage 2, the monitor.
 
-The command will mount the bin folder as a volume and then copy lmutil into it.
+This is currently folded into this project. I intend on breaking it out someday.
 
-All this work up to this point was just to extract the lmutil program to the local filesystem!
+The python code and its environment were already set up in the Docker file. Now you just have to run it.
 
-Did it work? From the host command prompt, if you run
+    docker run -it --rm -p 5000:5000 --name=lm flexlm
 
-    bin/lmutil
+And visit the URL http://localhost:5000/ (or use your server name in place of localhost).
 
-and you get some reasonable output, you can move on. It might not be able
-to run on the host you are running Docker on but that's okay, the next
-step is to install it into another Docker container to actually use it.
+Presumably you want it to run forever and survive reboots so this is the command to move to deployment.
 
+    docker run -d --restart always -p 5000:5000 --name=lm flexlm
+
+See it run
+
+    docker ps
+    
 ## Other applications for this Docker
 
 Of course you can use this as the starting point for a
