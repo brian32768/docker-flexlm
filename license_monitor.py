@@ -8,6 +8,8 @@ import sys, os, subprocess
 import re
 from flask import Flask
 from time import sleep
+from datetime import datetime
+from pytz import timezone
 
 app = Flask(__name__)
 
@@ -98,7 +100,14 @@ def process_licenses(fp):
                 userinfo[user] = [info]
 #            print(license_type, user, computer, start)
 
-    msg = '<html><body>\n<h1>ArcGIS License Server</h1>\n'
+    msg = '<html><body>\n'
+
+    # When someone hits reload it's nice to see a change
+    utc = datetime.utcnow()
+    tz  = timezone("America/Los_Angeles")
+    pst = tz.localize(utc)
+    msg += '<p>' + str(pst) + '</p>'
+    
 
     msg += ("Product: <b>%s</b> License server version: <b>%s</b> <br />" % daemon_status)
     

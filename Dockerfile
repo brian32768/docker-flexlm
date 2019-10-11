@@ -83,7 +83,7 @@ RUN echo "export PATH=\$PATH:$HOME/arcgis/licensemanager/bin/" >> .bashrc
 
 RUN /opt/rh/rh-python36/root/bin/python -m venv license_monitor && \
   source license_monitor/bin/activate && \
-  pip install flask
+  pip install flask pytz
 
 # Install the microservice and the config file
 COPY service.txt .
