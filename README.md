@@ -8,9 +8,7 @@ for less $!)
 Do you want to run the ArcGIS license manager inside a Docker?
 
 My ultimate goal in this project is just to get a monitor running
-(just a Web page) with the license manager running in it At this stage
-all I have is a Docker that will extract the executable for 'lmutil'
-for use in the monitor docker to create a Web front end.
+(just a Web page). 
 
 To get there, the project at this stage just builds a Docker image
 (called "flexlm") containing complete copy of the ESRI version of
@@ -20,7 +18,12 @@ Because Flexera FlexLM is licensed software, if you want to do this
 build you will need to download the Linux version of the license
 manager from ESRI and put it here before doing the build.
 
-## Stage 1, lmutil extraction
+There could be additional steps to build another separate Docker image
+that has just what's needed to run the lmutil executable and the web
+service but I don't do that yet. It's not as efficient as it could be,
+in other words.
+
+## Stage 1, build license manager server
 
 ### Notes on the Dockerfile
 
@@ -51,11 +54,20 @@ Then run the build command to create an image named 'flexlm'.
 
     docker build -t flexlm .
 
-After building, you will have an image file called flexlm with a complete copy of the
+If the build fails with a message about not being able to COPY then you did not put
+the tar.gz file here. The nice part about Docker is that it will pick up where it left
+off after you get the file and do the "docker build" command again.
+
+A successful build ends up with a long series of Copy File and Install File messages from
+the flexlm installer that runs inside the container and finally with
+
+    Successfully tagged flexlm:latest
+
+At this point, you will have an image file called "flexlm" with a complete copy of the
 license software installed in /home/flexlm/arcgis but no working configuration or
 license keys.
 
-### Confirm it built
+### Confirm the build (optional step!)
 
 You can look around in the new container by launching into a shell.
 if you don't want to, skip to the Extraction section below.
@@ -66,16 +78,19 @@ Now you're in a bash shell in the home directory of the 'flexlm' user.
 You can examine install log files and things like that. You should be able
 to execute the lmutil program which is in the LicenseManager/bin folder.
 
+You can run lmutil with this command
+
+    ~/arcgis/licensemanager/bin/lmutil
+
+The output should be all the subcommands and options for lmutil. After confirming
+it works, type 'exit' to leave the Docker container.
+
 The "--rm" will remove the container name "lm" when you exit from the shell.
 If it does not then you can remove it yourself with
 
     docker rm lm
 
-### Extaction lmutil
-
-Mount a volume and extract the utility.
-
-    docker run -it --rm -v bin:/mnt --rm --name=lm flexlm 'bash cp lmutil /mnt'
+    docker run -it --rm -v `pwd`/bin:/mnt --rm --name=lm flexlm cp arcgis/licensemanager/bin/lmutil /mnt
 
 The command will mount the bin folder as a volume and then copy lmutil into it.
 

@@ -54,4 +54,20 @@ RUN tar xzvf LicenseManager.tar.gz && \
     ./Setup -l Yes -m silent
 
 # Dump error messages out
-RUN cat /home/flexlm/arcgis/licensemanager/.Setup/LicenseManager_InstallLog.log
+RUN cat arcgis/licensemanager/.Setup/LicenseManager_InstallLog.log
+
+# Someday I will pull the files needed to run lmutil out and put them here.
+# I'd need to look at the dynamic libraries and install them in another container. ldd lmutil
+# For now I just install everything right here
+#VOLUME /mnt
+
+# Add the commands to flexlm user's PATH
+RUN echo "export PATH=$PATH:$HOME/arcgis/licensemanager/bin/" > .bashrc
+ENV LMUTIL /home/flexlm/arcgis/licensemanager/bin/lmutil
+
+# Stage 2, install the microservice
+COPY service.txt .
+#COPY license_monitor.py .
+
+# Stage 2, run the microservice
+#CMD [python license_monitor.py ./service.txt]
