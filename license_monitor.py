@@ -1,7 +1,13 @@
+#!/usr/local/bin/python
 """
-Runs as a standalone webserver that checks status of the ArcGIS license server and returns an HTML page.
+Runs as a standalone webserver that checks status of the ArcGIS
+license server and returns an HTML page.
+
+Note that the #! line above causes me to run in the conda version of
+python instead of the system version.
 
 @author: Brian Wilson <bwilson@co.clatsop.or.us>
+
 """
 from __future__ import print_function
 import sys, os, subprocess

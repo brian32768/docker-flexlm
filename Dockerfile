@@ -42,7 +42,8 @@ RUN yum install -y \
  mesa-libGLU.i686
 
 RUN adduser flexlm && \
-    mkdir -p /usr/local/share/macrovision/storage && chmod 777 /usr/local/share/macrovision/storage
+    mkdir -p /usr/local/share/macrovision/storage && \
+    chmod 777 /usr/local/share/macrovision/storage
 
 USER flexlm
 WORKDIR /home/flexlm
@@ -70,37 +71,29 @@ USER root
 #RUN yum install -y @development
 #RUN yum install -y rh-python36
 
+# This will upgrade conda, so the fact that the base image is old does not matter
+# flask-bootstrap needs hugo
+RUN conda update -n base -c defaults conda
+RUN conda config --add channels conda-forge && \
+    conda config --add channels hugo && \
+    conda config --add channels Esri
+
+COPY requirements.txt ./
+RUN conda install --file requirements.txt
+
 # Add python to the path for flexlm user
 USER flexlm
+WORKDIR /home/flexlm
 ENV LMUTIL /home/flexlm/arcgis/licensemanager/bin/lmutil
 
 # Add the commands to flexlm user's PATH
-RUN echo "source /opt/rh/rh-python36/enable" > .bashrc
 RUN echo "export PATH=\$PATH:$HOME/arcgis/licensemanager/bin/" >> .bashrc
 
-COPY requirements.txt ./
-
-# This will upgrade conda, so the fact that the base image is old does not matter
-# flask-bootstrap needs hugo
-# I could do this without creating a conda environment but I'd have to be root.
-#
-RUN conda update -n base -c defaults conda
-RUN conda create --name flexlm && \
-    conda activate flexlm && \
-    conda config --add channels conda-forge && \
-    conda config --add channels hugo && \
-    conda config --add channels Esri && \
-    conda install --file requirements.txt
-
-#RUN /opt/rh/rh-python36/root/bin/python -m venv license_monitor && \
-#  source license_monitor/bin/activate && \
-#  pip install -f requirements.txt
-
-# Install the microservice and the config file
+# Install the microservice
 COPY service.txt .
 COPY license_monitor.py .
 
 EXPOSE 5000
 
 # Run the microservice
-CMD "./license_monitor/bin/python" "license_monitor.py" "./service.txt"
+CMD "./license_monitor.py" "./service.txt"
