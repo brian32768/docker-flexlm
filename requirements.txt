@@ -1,0 +1,7 @@
+flask>=1.1.2
+flask-bootstrap>=3.2
+flask-wtf>=0.14
+arcgis>=1.8.0
+tzlocal>=2.1
+pytz
+
