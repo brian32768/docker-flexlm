@@ -1,7 +1,8 @@
-FROM centos:7
+FROM conda/miniconda3-centos7
 
 # =================================================================
 # STAGE 1 -- Configure a build host and install the license manager
+# This list of packages is from the ESRI requirements description.
 
 RUN yum install -y \
  compat-libstdc++-33.i686 \
@@ -9,9 +10,7 @@ RUN yum install -y \
  compat-openldap.i686 \
  cairo.i686 \
  freeglut.i686 \
- fuse-libs.i686
-
-RUN yum install -y \
+ fuse-libs.i686 \
  gmp.i686 \
  gtk2.i686 \
  PackageKit-glib.i686 \
@@ -25,9 +24,7 @@ RUN yum install -y \
  libgcc.i686 \
  libgfortran.i686 \
  libidn.i686 \
- libstdc++.i686
-
-RUN yum install -y \
+ libstdc++.i686 \
  libSM.i686 \
  libX11.i686 \
  libXau.i686 \
@@ -50,7 +47,7 @@ RUN adduser flexlm && \
 USER flexlm
 WORKDIR /home/flexlm
 
-COPY ArcGIS_License_Manager_Linux_2019_0_169356.tar.gz LicenseManager.tar.gz
+COPY ArcGIS_License_Manager_Linux_2019_2_173095.tar.gz LicenseManager.tar.gz
 RUN tar xzvf LicenseManager.tar.gz && \
     cd LicenseManager_Linux && \
     ./Setup -l Yes -m silent
@@ -61,7 +58,7 @@ RUN cat arcgis/licensemanager/.Setup/LicenseManager_InstallLog.log
 # ===========================================
 # STAGE 2 -- install and run the microservice
 
-# Someday I will pull the files needed to run lmutil out and put them here.
+# Someday I will separate out the files needed to run lmutil out and put them here.
 # I'd need to look at the dynamic libraries and install them in another container. ldd lmutil
 # For now I just install everything right here
 #VOLUME /mnt
@@ -69,9 +66,9 @@ RUN cat arcgis/licensemanager/.Setup/LicenseManager_InstallLog.log
 USER root
 
 # Might not need this section, just following boilerplate on Python 3 for redhat
-RUN yum install -y centos-release-scl
-RUN yum install -y @development
-RUN yum install -y rh-python36
+#RUN yum install -y centos-release-scl
+#RUN yum install -y @development
+#RUN yum install -y rh-python36
 
 # Add python to the path for flexlm user
 USER flexlm
@@ -81,9 +78,23 @@ ENV LMUTIL /home/flexlm/arcgis/licensemanager/bin/lmutil
 RUN echo "source /opt/rh/rh-python36/enable" > .bashrc
 RUN echo "export PATH=\$PATH:$HOME/arcgis/licensemanager/bin/" >> .bashrc
 
-RUN /opt/rh/rh-python36/root/bin/python -m venv license_monitor && \
-  source license_monitor/bin/activate && \
-  pip install flask pytz
+COPY requirements.txt ./
+
+# This will upgrade conda, so the fact that the base image is old does not matter
+# flask-bootstrap needs hugo
+# I could do this without creating a conda environment but I'd have to be root.
+#
+RUN conda update -n base -c defaults conda
+RUN conda create --name flexlm && \
+    conda activate flexlm && \
+    conda config --add channels conda-forge && \
+    conda config --add channels hugo && \
+    conda config --add channels Esri && \
+    conda install --file requirements.txt
+
+#RUN /opt/rh/rh-python36/root/bin/python -m venv license_monitor && \
+#  source license_monitor/bin/activate && \
+#  pip install -f requirements.txt
 
 # Install the microservice and the config file
 COPY service.txt .
