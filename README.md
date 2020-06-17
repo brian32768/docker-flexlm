@@ -38,6 +38,20 @@ TIMEZONE -- I should do the trick to mount the timezone files or at
 least read an environment variable instead of hardcoding Los_Angeles
 into the Python script.
 
+## Stage 0, test the app
+
+You can test the app without having any special ESRI software installed,
+using the lmstat.txt file included in this repo. 
+Set up a conda environment and run it. Like this,
+
+
+```bash
+conda create --name flexlm
+conda activate flexlm
+conda install --file requirements.txt
+python3 start_app.py
+```   
+
 ## Stage 1, build the license manager
 
 ### Prerequisites
