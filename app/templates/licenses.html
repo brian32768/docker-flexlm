@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}ArcGIS Desktop Licenses{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+  <h1>ArcGIS Desktop Licenses</h1>
+</div>
+
+  {{form.timestamp}}
+
+Product: <b>%s</b>
+License server version: <b>%s</b> <br />
+
+<h3>Current license usage: </h3>
+
+<table border=1>
+
+  <tr> <th>User</th> <th>Type</th> <th>Computer</th> <th>Start</th> </tr>
+
+</table>
+
+
+{% endblock %}
