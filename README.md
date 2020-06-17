@@ -13,7 +13,7 @@ It does this using a small app written in Python running as a service.
 The Python script needs to query the license manager and it does that
 using the "lmutil" command line utility.
 
-To get a copy of that utility, the Docker contains a complete copy of
+To get a copy of lmutil, the Docker contains a complete copy of
 the ESRI version of Flexera flexlm.
 
 Because Flexera FlexLM is licensed software, if you want to use this
