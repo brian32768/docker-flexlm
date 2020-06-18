@@ -48,7 +48,7 @@ Set up a conda environment and run it. Like this,
 ```bash
 conda create --name flexlm
 conda activate flexlm
-conda install --file requirements.txt
+conda install -c conda-forge --file requirements.txt
 python3 start_app.py
 ```   
 

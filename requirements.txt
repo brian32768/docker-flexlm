@@ -3,5 +3,8 @@ flask-bootstrap>=3.2
 flask-wtf>=0.14
 arcgis>=1.8.0
 tzlocal>=2.1
-pytz
+pytz>=2020.1
+autopep8>=1.5.3
+pylint>=2.5.3
+python-dotenv>=0.13.0
 

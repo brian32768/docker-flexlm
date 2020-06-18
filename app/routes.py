@@ -1,44 +1,31 @@
-from IPython.display import display
-from flask import render_template, redirect, flash
-from app import app
+from flask import Flask, render_template, redirect, flash
 from config import Config
 
 import sys, os, subprocess
 import re
-from flask import Flask
 from time import sleep
 from datetime import datetime, timezone
-import pytz
 
-app = Flask(__name__)
+from app import app
 
-# Set to True if We only care if all licenses are in use
-SHOWLIMITONLY = True
+def parse_licenses(fp):
 
-def render_page():
-    """ Generate the contents of a web page from lmutil. """
-
-    # Create a pipe to talk to lmutil
-    p = subprocess.Popen(args, stdout=subprocess.PIPE, bufsize=1)
-
-    # Turn lmutil output into a web page 
-    form = process_licenses(p.stdout)
-    return render_template('licenses.html', form=form)
-
-def process_licenses(fp):
+    utc = datetime.utcnow().replace(tzinfo=timezone.utc, second=0, microsecond=0)
 
     # Define the regular expressions used to parse the output of lmstat.
     re_daemon = re.compile(r'\s*(\w+)\: UP (.*)')
     re_license_type = re.compile(r'^Users of (\S+):.* of (\d+).* of (\d+).*')
     re_user_info = re.compile(r'\s+(\S+)\s+(\S+).*start\s+(.*)')
 
+    product = "none at all"
     daemon_status = ('??product type not found','??')
     licenses = {}
     userinfo = {}
 
     for r in fp.readlines():
-        line = r.rstrip().decode('utf-8')
-        if not len(line): continue
+        line = r.rstrip()
+        if not len(line):
+            continue
 
         mo = re_daemon.search(line)
         if (mo):
@@ -50,12 +37,10 @@ def process_licenses(fp):
         mo = re_license_type.search(line)
         if (mo):
             license_type = mo.group(1)
-            issued = mo.group(2)
+            total = mo.group(2)
             in_use = mo.group(3)
-#            print(license_type, issued, in_use)
-            if (SHOWLIMITONLY and (issued > in_use)):
-                continue
-            licenses[license_type] = (issued, in_use)
+            #print(license_type, total, in_use)
+            licenses[license_type] = {'total':total, 'in_use':in_use}
             continue
 
         mo = re_user_info.search(line)
@@ -64,20 +49,20 @@ def process_licenses(fp):
             computer = mo.group(2)
             start = mo.group(3)
 
-            info = (license_type, computer, start)
+            info = {'license_type':license_type, 'computer':computer, 'start':start}
             if (user in userinfo):
                 userinfo[user].append(info)
             else:
                 userinfo[user] = [info]
-#            print(license_type, user, computer, start)
+            #print(license_type, user, computer, start)
+        pass
 
-    # When someone hits reload it's nice to see a change
-    utc = datetime.now()
-    tz  = pytz.timezone("America/Los_Angeles")
     form = {
-        'time': str(tz.localize(utc)),
-        'product': product,
-        'version': daemon_status,
+        'timestamp': utc,
+        'product':  product,
+        'arcgis_version':  daemon_status,
+        'licenses': licenses,
+        'userinfo': userinfo
     }
         
 #    for user in sorted(userinfo):
@@ -100,25 +85,38 @@ def process_licenses(fp):
 #                type   = '<em>%s</em>' % type
 #                in_use = '<em>%s</em>' % in_use
 #            msg += ("<tr> <td>%s</td> <td>%s</td> <td>%s</td> </tr>\n" % (type, issued, in_use))
-
+    print(form)
     return form
 
+@app.route('/')
+def main_page():
+    """ Generate the contents of a web page from lmutil. """
+
+    # Create a pipe to talk to lmutil
+    if Config.TEST_MODE:
+        fp = open(Config.TEST_FILE, 'r', encoding="utf-8")
+    else:
+        p = subprocess.Popen(Config.LMUTIL, stdout=subprocess.PIPE, bufsize=1)
+        fp = p.stdout
+
+    form = parse_licenses(fp)
+    fp.close()
+
+    return render_template('licenses.html', form=form)
 
 def test_parser(test_file):
     # Test parsing with this text file instead of lmstat!
-    with open(test_file, 'r') as fp:
-        msg = process_licenses(fp)
-        print(msg)
-
-@app.route('/')
-def main():
-    return render_page()
+    fp = open(Config.TEST_FILE, 'r', encoding="utf-8")
+    results = parse_licenses(fp)
+    fp.close()
+    print(results)
 
 # ------------------------------------------------------------------------
 
 if __name__ == '__main__':
     
-    # UNIT TEST
-    print(render_page())
+    # UNIT TESTS
+    test_parser(Config.TEST_FILE)
+    print(main_page())
 
 # That's all!
