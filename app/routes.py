@@ -8,7 +8,16 @@ from datetime import datetime, timezone
 
 from app import app
 
-def parse_licenses(fp):
+@app.route('/')
+def main_page():
+    """ Generate the contents of a web page from lmutil. """
+
+    # Create a pipe to talk to lmutil
+    if Config.TEST_MODE:
+        fp = open(Config.TEST_FILE, 'r', encoding="utf-8")
+    else:
+        p = subprocess.Popen(Config.LMUTIL, stdout=subprocess.PIPE, bufsize=1)
+        fp = p.stdout
 
     utc = datetime.utcnow().replace(tzinfo=timezone.utc, second=0, microsecond=0)
 
@@ -45,26 +54,20 @@ def parse_licenses(fp):
 
         mo = re_user_info.search(line)
         if (mo):
-            user = mo.group(1)
-            computer = mo.group(2)
-            start = mo.group(3)
+            username = mo.group(1)
+            info = {
+                'name': username,
+                'license_type':license_type, 
+                'computer': mo.group(2), 
+                'start': mo.group(3)
+            }
 
-            info = {'license_type':license_type, 'computer':computer, 'start':start}
-            if (user in userinfo):
-                userinfo[user].append(info)
+            if (username in userinfo):
+                userinfo[username].append(info)
             else:
-                userinfo[user] = [info]
-            #print(license_type, user, computer, start)
+                userinfo[username] = [info]
         pass
 
-    form = {
-        'timestamp': utc,
-        'product':  product,
-        'arcgis_version':  daemon_status,
-        'licenses': licenses,
-        'userinfo': userinfo
-    }
-        
 #    for user in sorted(userinfo):
 #        for info in userinfo[user]:
 #            (license_type, computer, start) = info
@@ -85,31 +88,17 @@ def parse_licenses(fp):
 #                type   = '<em>%s</em>' % type
 #                in_use = '<em>%s</em>' % in_use
 #            msg += ("<tr> <td>%s</td> <td>%s</td> <td>%s</td> </tr>\n" % (type, issued, in_use))
-    print(form)
-    return form
 
-@app.route('/')
-def main_page():
-    """ Generate the contents of a web page from lmutil. """
-
-    # Create a pipe to talk to lmutil
-    if Config.TEST_MODE:
-        fp = open(Config.TEST_FILE, 'r', encoding="utf-8")
-    else:
-        p = subprocess.Popen(Config.LMUTIL, stdout=subprocess.PIPE, bufsize=1)
-        fp = p.stdout
-
-    form = parse_licenses(fp)
     fp.close()
 
-    return render_template('licenses.html', form=form)
+    return render_template('licenses.html',
+        timestamp = utc,
+        product =  product,
+        arcgis_version = daemon_status,
+        licenses = licenses,
+        userinfo = userinfo
+    )   
 
-def test_parser(test_file):
-    # Test parsing with this text file instead of lmstat!
-    fp = open(Config.TEST_FILE, 'r', encoding="utf-8")
-    results = parse_licenses(fp)
-    fp.close()
-    print(results)
 
 # ------------------------------------------------------------------------
 

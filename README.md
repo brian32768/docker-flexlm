@@ -44,7 +44,6 @@ You can test the app without having any special ESRI software installed,
 using the lmstat.txt file included in this repo. 
 Set up a conda environment and run it. Like this,
 
-
 ```bash
 conda create --name flexlm
 conda activate flexlm
