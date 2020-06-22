@@ -4,7 +4,7 @@ from config import Config
 import sys, os, subprocess
 import re
 from time import sleep
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from app import app
 
@@ -19,7 +19,8 @@ def main_page():
         p = subprocess.Popen(Config.LMUTIL, stdout=subprocess.PIPE, bufsize=1)
         fp = p.stdout
 
-    utc = datetime.utcnow().replace(tzinfo=timezone.utc, second=0, microsecond=0)
+    # System locale has to be set for this to work correctly.
+    utc = datetime.now().replace(microsecond=0)
 
     # Define the regular expressions used to parse the output of lmstat.
     re_daemon = re.compile(r'\s*(\w+)\: UP (.*)')
@@ -56,7 +57,6 @@ def main_page():
         if (mo):
             username = mo.group(1)
             info = {
-                'name': username,
                 'license_type':license_type, 
                 'computer': mo.group(2), 
                 'start': mo.group(3)
@@ -96,7 +96,7 @@ def main_page():
         product =  product,
         arcgis_version = daemon_status,
         licenses = licenses,
-        userinfo = userinfo
+        user = userinfo
     )   
 
 

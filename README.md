@@ -166,3 +166,25 @@ I found out how hard it was (FOR ME) to work with Docker On Windows.
 That incomplete repo is still out there. See
 http://github.com/brian32768/node-service
 
+
+## Resources
+
+### Another similar project
+
+Uses lmutil and stores output in SQL Server:
+https://github.com/jmitz/ArcGISLicenseMonitor/blob/master/LicenseMonitor.py
+
+### WATCHING THE LOG FILE
+
+#### REPORT LOGGING - can be enabled in OPTIONS file but produces an encrypted file that is of no use without Flexera software.
+
+See https://openlm.com/blog/are-flexnet-flexlm-manager-report-logs-essential-for-license-consumption-monitoring/
+
+#### Watch for DENIED messages
+
+14:46:39 (telelogic) DENIED: DOORS indkach@indkach  [telelogic] 
+(Licensed number of users already reached. (-4,342:10054 )) 
+14:46:39 (telelogic) DENIED: DOORS indkach@indkach  [telelogic] 
+(Licensed number of users already reached. (-4,342:10054 )) 
+14:46:39 (telelogic) OUT: TLSTOK-token indkach@indkach  [DOORS] 
+(3 licenses)
