@@ -24,9 +24,9 @@ class Config(object):
     LICENSE = os.environ.get('LICENSE') or 'service.txt'
     _LMUTIL = os.environ.get('LMUTIL')
     if _LMUTIL:
+        os.chdir(LMHOME)
         file_must_exist(_LMUTIL)
         file_must_exist(LICENSE)
-        os.chdir(LMHOME)
         LMUTIL = ['lmutil', 'lmstat', '-c', '"' + LICENSE + '"', '-a']
     else:
         print("TEST MODE INVOKED.")
