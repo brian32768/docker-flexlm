@@ -24,10 +24,13 @@ class Config(object):
     LICENSE = os.environ.get('LICENSE') or 'service.txt'
     _LMUTIL = os.environ.get('LMUTIL')
     if _LMUTIL:
+        # Holy cow but Windows was super fussy about this section.
+        # It would not accept running the actual file with .exe on it.
+        # It was impossible to pass spaces in args. Gag me, let me have Linux.
         os.chdir(LMHOME)
         file_must_exist(_LMUTIL)
         file_must_exist(LICENSE)
-        LMUTIL = ['lmutil', 'lmstat', '-c', '"' + LICENSE + '"', '-a']
+        LMUTIL = ['lmutil', 'lmstat', '-c', LICENSE, '-a']
     else:
         print("TEST MODE INVOKED.")
         TEST_MODE = True
