@@ -20,11 +20,14 @@ class Config(object):
     TEST_MODE = False
     TEST_FILE = 'lmstat.txt'
 
+    LMHOME  = os.environ.get('LMHOME') or '.'
     LICENSE = os.environ.get('LICENSE') or 'service.txt'
     _LMUTIL = os.environ.get('LMUTIL')
     if _LMUTIL:
         file_must_exist(_LMUTIL)
-        LMUTIL = [_LMUTIL, 'lmstat', '-c', '"' + LICENSE + '"', '-a']
+        file_must_exist(LICENSE)
+        os.chdir(LMHOME)
+        LMUTIL = ['lmutil', 'lmstat', '-c', '"' + LICENSE + '"', '-a']
     else:
         print("TEST MODE INVOKED.")
         TEST_MODE = True
