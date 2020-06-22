@@ -69,9 +69,8 @@ class ReadLmutil(object):
         license = {} # A single license record
 
         for r in fp.readlines():
-            line = str(r).rstrip()
-            if not len(line): continue
-            #print(line)
+            line = str(r, encoding='utf-8').strip()
+            print(line)
 
             # Vendor daemon status section shows,
             # this is ARCGIS and a version number.
@@ -138,6 +137,7 @@ class ReadLmutil(object):
             fp = open(test_file, 'r', encoding='utf-8')
         else:
             # Create a pipe to talk to lmutil
+            print(Config.LMUTIL)
             p = subprocess.Popen(Config.LMUTIL, stdout=subprocess.PIPE, bufsize=1)
             fp = p.stdout
 
