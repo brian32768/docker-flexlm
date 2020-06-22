@@ -69,7 +69,8 @@ class ReadLmutil(object):
         license = {} # A single license record
 
         for r in fp.readlines():
-            line = str(r, encoding='utf-8').strip()
+            # We use leading whitespace so only strip on the right
+            line = str(r, encoding='utf-8').rstrip()
             print(line)
 
             # Vendor daemon status section shows,
