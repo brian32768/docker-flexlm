@@ -24,7 +24,7 @@ class Config(object):
     _LMUTIL = os.environ.get('LMUTIL')
     if _LMUTIL:
         file_must_exist(_LMUTIL)
-        LMUTIL = [_LMUTIL, 'lmstat', '-c ' + LICENSE, '-a']
+        LMUTIL = [_LMUTIL, 'lmstat', '-c', '"' + LICENSE + '"', '-a']
     else:
         print("TEST MODE INVOKED.")
         TEST_MODE = True
