@@ -69,7 +69,7 @@ class ReadLmutil(object):
         license = {} # A single license record
 
         for r in fp.readlines():
-            line = r.rstrip()
+            line = str(r).rstrip()
             if not len(line): continue
             #print(line)
 

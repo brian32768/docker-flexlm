@@ -20,7 +20,7 @@ class Config(object):
     TEST_MODE = False
     TEST_FILE = 'lmstat.txt'
 
-    LICENSE = os.environ.get('LICENSE') or './service.txt'
+    LICENSE = os.environ.get('LICENSE') or 'service.txt'
     _LMUTIL = os.environ.get('LMUTIL')
     if _LMUTIL:
         file_must_exist(_LMUTIL)
