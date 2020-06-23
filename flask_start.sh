@@ -10,8 +10,13 @@ export LMUTIL
 export LICENSE
 
 # Obviously this is not the right way to do this.
-#PYTHON=/c/Users/bwilson.CLATSOP/AppData/Local/ESRI/conda/envs/arctic/python
-PYTHON=python
+PYTHON=$WINHOME/AppData/Local/ESRI/conda/envs/arctic/python
+
+# at the command line I have to do
+#conda activate arctic
+# then this will work
+# needs fixing!
+#PYTHON=python
 
 # I have no idea why my Windows Server instance needs the pwd here, freaky.
 $PYTHON `pwd`/start_app.py
