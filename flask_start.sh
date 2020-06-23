@@ -5,4 +5,4 @@ LMHOME='C:/Program Files (x86)/ArcGIS/LicenseManager/bin'
 LMUTIL="lmutil.exe"
 LICENSE="service.txt"
 
-python app.py
+python start_app.py
