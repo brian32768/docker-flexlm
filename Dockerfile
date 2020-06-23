@@ -79,7 +79,7 @@ RUN conda config --add channels conda-forge && \
     conda config --add channels Esri
 
 COPY requirements.txt ./
-RUN conda install --file requirements.txt
+RUN conda install --file conda_requirements.txt
 
 # Add python to the path for flexlm user
 USER flexlm
