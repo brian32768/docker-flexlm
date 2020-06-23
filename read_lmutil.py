@@ -16,14 +16,19 @@ re_user_info = re.compile(r'\s+(\S+)\s+(\S+).*start\s+(.*)')
 timeformat = "%a %m/%d %H:%M"
 
 sillynames = {
-    'ACT': 'ACT??',
-    'ARC/INFO': 'ArcGIS Desktop',
-    'desktopAdvP': 'ArcGIS Pro',
+    'ARC/INFO': 'ArcGIS Desktop Advanced',
+    'Editor': 'ArcGIS Desktop Editor',
+    'Viewer': 'ArcGIS Desktop Basic',
+    'desktopAdvP': 'ArcGIS Pro Advanced',
+    'desktopStdP': 'ArcGIS Pro Standard',
+    'desktopBasicP': 'ArcGIS Pro Basic',
+    '3DAnalystP': '3D Analyst Pro',
+    'spatialAnalystP': 'Spatial Analyst Pro',
+    'networkAnalystP': 'Network Analyst Pro',
     'ArcStorm': 'ArcStorm',
     'ArcStormEnable': 'ArcStorm "enable"',
-    'Grid': 'Raster add on',
+    'Grid': 'Spatial Analyst',
     'MrSID': 'MrSID add on',
-    'spatialAnalystP': 'Spatial Analyst extension for Pro',
     'TIFFLZW': 'LZW add on for TIFF',
     'VBA': 'VisualBasic',
     'Plotting': 'ArcPlot extension',
@@ -70,8 +75,13 @@ class ReadLmutil(object):
 
         for r in fp.readlines():
             # We use leading whitespace so only strip on the right
-            line = str(r, encoding='utf-8').rstrip()
-            print(line)
+            if type(r) == type(''):
+                # reading from file
+                line = r.rstrip()
+            else:
+                # reading from subprocess
+                line = str(r, encoding='utf-8').rstrip()
+            #print(line)
 
             # Vendor daemon status section shows,
             # this is ARCGIS and a version number.

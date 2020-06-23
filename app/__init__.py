@@ -1,4 +1,5 @@
 from flask import Flask
+import flask_bootstrap
 from flask_bootstrap import Bootstrap
 from config import Config
 import logging

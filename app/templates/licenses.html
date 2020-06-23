@@ -9,25 +9,39 @@
 
   {{timestamp}}
 
-Product: <b>{{product}}</b>
-License server version: <b>{{license}}</b> <br />
-
 <h3>Current license usage: </h3>
 
-<table border=1>
-
-  <tr> <th>User</th> <th>Type</th> <th>Computer</th> <th>Start</th> </tr>
-
-    {% for item in items %}
-    <TR>
-       <TD class="c1">{{user.username}}></TD>
-       <TD class="c2">{{user.computer}}</TD>
-       <TD class="c3">{{user.start}}</TD>
-       <TD class="c4"><SPAN>{{user.info}}</SPAN></TD>
-    </TR>
+<table class="table table-striped">
+  <thead>
+    <tr> <th>License</th> <th>Total</th> <th>In use</th> <th>Users</th> </tr>
+  </thead>
+  <tbody>
+    {% for license in licenses %}
+    <tr>
+       <td class="c1">{{license.productname}}</td>
+       <td class="c2">{{license.total}}</td>
+       <td class="c3">{{license.in_use}}</td>
+       <td class="c4">
+         {% for user in license.users %}
+         <table class="table table-user">
+           <tr>
+            <td>{{user.name}}</td>
+            <td>{{user.computer}}</td>
+            <td>{{user.start}}</td>
+         </tr>
+        </table>
+        {% endfor %}
+        </td>
+      </tr>
     {% endfor %}
-    </table>
+  </tbody>
+</table>
 
-{{user}}
+<p>
+<i>
+  Product: {{product}}
+  License server version: <b>{{arcgis_version}}</b>
+</i>
+</p>
 
 {% endblock %}

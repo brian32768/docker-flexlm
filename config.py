@@ -39,9 +39,6 @@ class Config(object):
         file_must_exist(LICENSE)
 
     PORT = os.environ.get('PORT') or 5000
-
-    # Set to True if We only care if all licenses are in use
-    SHOWLIMITONLY = True
     
     pass
 
