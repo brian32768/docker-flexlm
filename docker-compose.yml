@@ -6,5 +6,5 @@ services:
       - 5000:5000
     volumes:
       - ${PWD}/service.txt:/home/flexlm/service.txt
-    restart: unless-stopped
+
 
