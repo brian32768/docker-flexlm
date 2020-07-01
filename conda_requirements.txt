@@ -1,0 +1,7 @@
+flask>=1.1.2
+flask-wtf>=0.14
+flask-bootstrap>=3.3
+pytz>=2020.1
+autopep8>=1.5.3
+pylint>=2.5.3
+python-dotenv>=0.13.0

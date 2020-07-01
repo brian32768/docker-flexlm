@@ -7,18 +7,41 @@
   <h1>ArcGIS Desktop Licenses</h1>
 </div>
 
-  {{form.timestamp}}
-
-Product: <b>%s</b>
-License server version: <b>%s</b> <br />
+  {{timestamp}}
 
 <h3>Current license usage: </h3>
 
-<table border=1>
-
-  <tr> <th>User</th> <th>Type</th> <th>Computer</th> <th>Start</th> </tr>
-
+<table class="table table-striped">
+  <thead>
+    <tr> <th>License</th> <th>Total</th> <th>In use</th> <th>Users</th> </tr>
+  </thead>
+  <tbody>
+    {% for license in licenses %}
+    <tr>
+       <td class="c1">{{license.productname}}</td>
+       <td class="c2">{{license.total}}</td>
+       <td class="c3">{{license.in_use}}</td>
+       <td class="c4">
+         {% for user in license.users %}
+         <table class="table table-user">
+           <tr>
+            <td>{{user.name}}</td>
+            <td>{{user.computer}}</td>
+            <td>{{user.start}}</td>
+         </tr>
+        </table>
+        {% endfor %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
 </table>
 
+<p>
+<i>
+  Product: {{product}}
+  License server version: <b>{{arcgis_version}}</b>
+</i>
+</p>
 
 {% endblock %}

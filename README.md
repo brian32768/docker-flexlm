@@ -2,23 +2,29 @@
 
 Do you wonder who is using your ArcGIS concurrent licenses?
 
-Is the available monitoring software too expensive? (you can just buy more ArcGIS seats
-for less money!)
+Is the available monitoring software too expensive? (you can just buy
+more ArcGIS seats for less money!)
 
 Do you want to run the ArcGIS license manager inside a Docker?
 
-My goal in this project has been to get a monitor running (just a Web page so far).
+My goal in this project has been to get a monitor running (just a Web
+page so far).
 
 It does this using a small app written in Python running as a service.
 The Python script needs to query the license manager and it does that
 using the "lmutil" command line utility.
 
-To get a copy of lmutil, the Docker contains a complete copy of
-the ESRI version of Flexera flexlm.
+I originally wrote this to run only in a Docker container but
+now I have it working outside Docker as long as the host machine
+has a copy of "lmutil" on it.
 
-Because Flexera FlexLM is licensed software, if you want to use this
-monitor, you will need to download the Linux version of the license
-manager from ESRI and put it here before doing the build.
+If you want to deploy to a machine that does not have the ArcGIS license
+manager running on it, you can build the Docker version.
+
+Because the license manager "Flexera FlexLM" is licensed software, if
+you want to use this monitor in the Docker, you will need to download
+the Linux version of the license manager package from ESRI and put it
+here in the project folder before doing the Docker build.
 
 ## Docker comment
 
@@ -31,30 +37,29 @@ isolated.
 
 ## Future directions
 
-Use MQTT and then integrate with "arctic".
-It could publish each time license usage changes.
-
-TIMEZONE -- I should do the trick to mount the timezone files or at
-least read an environment variable instead of hardcoding Los_Angeles
-into the Python script.
+TIMEZONE -- With Docker I should do the trick to mount the timezone
+files or at least read an environment variable instead of hardcoding
+Los_Angeles into the Python script.
 
 ## Stage 0, test the app
 
-You can test the app without having any special ESRI software installed,
-using the lmstat.txt file included in this repo. 
-Set up a conda environment and run it. Like this,
-
+You can test the app without having any special ESRI software
+installed, using the lmstat.txt file included in this repo.  Set up a
+conda environment and run it. Like this,
 
 ```bash
-conda create --name flexlm
-conda activate flexlm
-conda install --file requirements.txt
-python3 start_app.py
-```   
+conda create --name arctic
+conda activate arctic
+conda install -c conda-forge --file conda_requirements.txt
+(not yet --> python3 -m pip install -r requirements.txt)
+python3 app.py
+```
 
-## Stage 1, build the license manager
+## Option 1, deploy without Docker
 
-### Prerequisites
+## Option 2, use with Docker
+
+#### Prerequisites
 
 The Dockerfile is currently built using this version of the license manager:
 
@@ -65,7 +70,7 @@ To get the file go to my.esri.com and download the latest Linux
 license manager.  It will be a file ending in 'tar.gz'. Put the file
 in this folder. (The one containing the Dockerfile.)
 
-### Notes on the Dockerfile
+#### Notes on the Dockerfile
 
 The requirements doc at ESRI call for RHEL 6 or 7; this Dockerfile uses Centos 7.
 
@@ -166,3 +171,31 @@ I found out how hard it was (FOR ME) to work with Docker On Windows.
 That incomplete repo is still out there. See
 http://github.com/brian32768/node-service
 
+
+## Resources
+
+### Bootstrap 3
+
+I'm using conda, and they have the flask-bootstrap version 3 package. Bootstrap moved to version 4 ages ago. Docs for 3 are here.
+
+http://bootstrapdocs.com/v3.0.3/docs/getting-started/
+
+### Another similar project
+
+Uses lmutil and stores output in SQL Server:
+https://github.com/jmitz/ArcGISLicenseMonitor/blob/master/LicenseMonitor.py
+
+### WATCHING THE LOG FILE
+
+#### REPORT LOGGING - can be enabled in OPTIONS file but produces an encrypted file that is of no use without Flexera software.
+
+See https://openlm.com/blog/are-flexnet-flexlm-manager-report-logs-essential-for-license-consumption-monitoring/
+
+#### Watch for DENIED messages
+
+14:46:39 (telelogic) DENIED: DOORS indkach@indkach  [telelogic] 
+(Licensed number of users already reached. (-4,342:10054 )) 
+14:46:39 (telelogic) DENIED: DOORS indkach@indkach  [telelogic] 
+(Licensed number of users already reached. (-4,342:10054 )) 
+14:46:39 (telelogic) OUT: TLSTOK-token indkach@indkach  [DOORS] 
+(3 licenses)

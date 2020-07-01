@@ -1,6 +1,18 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}ArcGIS License Monitor{% endblock %}
+{% block title %}ArcGIS Monitor{% endblock %}
+
+{% block styles %}
+{{super()}}
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+
+<link rel="stylesheet" href="{{url_for('.static', filename='cc.css')}}">
+{% endblock %}
 
 {% block navbar %}
 <div class="navbar navbar-inverse" role="navigation">

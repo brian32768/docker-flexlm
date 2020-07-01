@@ -79,7 +79,7 @@ RUN conda config --add channels conda-forge && \
     conda config --add channels Esri
 
 COPY requirements.txt ./
-RUN conda install --file requirements.txt
+RUN conda install --file conda_requirements.txt
 
 # Add python to the path for flexlm user
 USER flexlm
@@ -92,7 +92,7 @@ RUN echo "export PATH=\$PATH:$HOME/arcgis/licensemanager/bin/" >> .bashrc
 # Install the microservice
 COPY license_monitor.py .
 
-xsEXPOSE 5000
+EXPOSE 5000
 
 # Run the microservice
 CMD "./license_monitor.py" "./service.txt"
