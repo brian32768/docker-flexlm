@@ -1,0 +1,10 @@
+version: '3.6'
+services:
+  flexlm:
+    image: flexlm:latest
+    ports:
+      - 5000:5000
+    volumes:
+      - ${PWD}/service.txt:/home/flexlm/service.txt
+    restart: unless-stopped
+

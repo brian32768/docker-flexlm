@@ -90,10 +90,9 @@ ENV LMUTIL /home/flexlm/arcgis/licensemanager/bin/lmutil
 RUN echo "export PATH=\$PATH:$HOME/arcgis/licensemanager/bin/" >> .bashrc
 
 # Install the microservice
-COPY service.txt .
 COPY license_monitor.py .
 
-EXPOSE 5000
+xsEXPOSE 5000
 
 # Run the microservice
 CMD "./license_monitor.py" "./service.txt"

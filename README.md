@@ -65,12 +65,6 @@ To get the file go to my.esri.com and download the latest Linux
 license manager.  It will be a file ending in 'tar.gz'. Put the file
 in this folder. (The one containing the Dockerfile.)
 
-You also need a copy of the "service.txt" file from your license
-manager.  You need to edit the service.txt file so that it has the
-actual license server host name instead of "This_Host".
-
-Copy the edited file into this folder, too.
-
 ### Notes on the Dockerfile
 
 The requirements doc at ESRI call for RHEL 6 or 7; this Dockerfile uses Centos 7.
@@ -134,25 +128,30 @@ You can run lmutil with this command
 
     lmutil
 
-## Stage 2, the web monitor.
+## Stage 2, Deploy.
 
 The python code and its environment were already set up in the Docker
-file. Now you just have to run it. To try it out, do this:
+file.
 
-    docker run -it --rm -p 5000:5000 --name=lm flexlm
+You need a current copy of the "service.txt" file from your license
+manager.  You need to edit the service.txt file so that it has the
+actual license server host name instead of "This_Host".
+Copy the service.txt file into this folder, and edit it.
 
-Then visit the URL http://localhost:5000/ (or use your server name in place of localhost).
+Now you just have to run the container.
 
-Now that you see it's working, presumably you want it to run forever
-on a server and to survive reboots so this is the command to move to
-deployment.
+You can either use Swarm or run it locally.
 
-    docker run -d --restart always -p 5000:5000 --name=lm flexlm
+### Option: Swarm
 
-You can confirm it's running, 
+    docker stack deploy -c docker-compose.yml flexlm
 
-    docker ps
-    
+### Option: Docker
+
+    docker run -d --p 5000:5000 --name=flexlm flexlm
+
+Either way, next visit the URL http://localhost:5000/ (or use your server name in place of localhost).
+
 ## Other applications for this Docker
 
 You can use this as the starting point for a Dockerised license
