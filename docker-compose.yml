@@ -1,10 +1,8 @@
-version: '3.6'
+version: '3.7'
 services:
   flexlm:
     image: flexlm:latest
     ports:
       - 5000:5000
     volumes:
-      - ${PWD}/service.txt:/home/flexlm/service.txt
-
-
+      - ./service.txt:/home/flexlm/service.txt
