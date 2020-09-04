@@ -1,8 +1,4 @@
-# Note this will not override existing environment settings
-#from dotenv import load_dotenv
 import os
-
-#load_dotenv()
 
 def file_must_exist(f):
     if os.path.exists(f): return
@@ -30,7 +26,7 @@ class Config(object):
         os.chdir(LMHOME)
         file_must_exist(_LMUTIL)
         file_must_exist(LICENSE)
-        LMUTIL = ['lmutil', 'lmstat', '-c', LICENSE, '-a']
+        LMUTIL = [_LMUTIL, 'lmstat', '-c', LICENSE, '-a']
     else:
         print("TEST MODE INVOKED.")
         TEST_MODE = True
@@ -38,8 +34,6 @@ class Config(object):
     if not TEST_MODE:
         file_must_exist(LICENSE)
 
-    PORT = os.environ.get('PORT') or 5000
-    
     pass
 
 # That's all!

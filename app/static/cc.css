@@ -1,0 +1,19 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 11pt;
+    color: rgb(100, 100, 100);
+    background-color: white;
+}
+b {
+    color: rgb(40,40,40);
+}
+th {
+    color: darkorange;
+    background-color: rgb(250, 250, 250);
+    font-size: 10pt;
+}
+tbody, td {
+    vertical-align: top;
+    text-align: right;
+    border-bottom: 1px solid #ddd;
+}

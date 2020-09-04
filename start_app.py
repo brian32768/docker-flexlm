@@ -4,8 +4,13 @@ from config import Config
 
 if __name__ == "__main__":
 
-    port = Config.PORT
-    print("Starting license monitor service on port", port)
+    port = 5000
+    try:
+        port = sys.argv[1]
+    except:
+        pass
+
+    print("Starting FlexLM license monitor service on port", port)
 
     app.run(host='0.0.0.0', port=port, debug=True)
 

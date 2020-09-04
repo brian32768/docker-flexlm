@@ -37,10 +37,6 @@ isolated.
 
 ## Future directions
 
-TIMEZONE -- With Docker I should do the trick to mount the timezone
-files or at least read an environment variable instead of hardcoding
-Los_Angeles into the Python script.
-
 ## Stage 0, test the app
 
 You can test the app without having any special ESRI software
@@ -199,3 +195,27 @@ See https://openlm.com/blog/are-flexnet-flexlm-manager-report-logs-essential-for
 (Licensed number of users already reached. (-4,342:10054 )) 
 14:46:39 (telelogic) OUT: TLSTOK-token indkach@indkach  [DOORS] 
 (3 licenses)
+
+## Optimization
+
+### What it really uses
+
+There is NOTHING special in here so the list of required packages
+is pretty meaningless. I bet I can copy the binary out to an alpine
+image and get it to load just fine.
+
+But NO, lmutil is 32-bit so you have to install compat packages for that.
+
+lmutil ends up installed in /home/flexlm/arcgis/licensemanager/bin
+
+```bash
+    ldd lmutil
+        linux-gate.so.1 =>  (0xf7f59000)
+        libpthread.so.0 => /lib/libpthread.so.0 (0xf7f2f000)        glibc
+        libm.so.6 => /lib/libm.so.6 (0xf7eed000)                    glibc
+        libgcc_s.so.1 => /lib/libgcc_s.so.1 (0xf7ed2000)            libgcc
+        libc.so.6 => /lib/libc.so.6 (0xf7d07000)                    glibc
+        libdl.so.2 => /lib/libdl.so.2 (0xf7d01000)                  glibc
+        librt.so.1 => /lib/librt.so.1 (0xf7cf8000)
+        /lib/ld-lsb.so.3 => /lib/ld-linux.so.2 (0xf7f5b000)
+```

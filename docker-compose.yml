@@ -5,4 +5,11 @@ services:
     ports:
       - 5000:5000
     volumes:
-      - ./service.txt:/home/flexlm/service.txt
+      - ./service.txt:/home/flexlm/service.txt:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    command: ["/home/flexlm/sevice.txt"]
+    build:
+      context: .
+      dockerfile: Dockerfile.flexlm
+
