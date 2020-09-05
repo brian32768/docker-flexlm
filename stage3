@@ -1,0 +1,44 @@
+# ===========================================
+# STAGE 3 -- install and run the microservice
+
+#FROM conda/miniconda3-centos7
+
+# Someday I will separate out the files needed to run lmutil out and put them here.
+# I'd need to look at the dynamic libraries and install them in another container. ldd lmutil
+# For now I just install everything right here
+
+USER root
+
+# This will upgrade conda, so the fact that the base image is old does not matter
+# flask-bootstrap needs hugo
+RUN conda update -n base -c defaults conda
+RUN conda config --add channels conda-forge && \
+    conda config --add channels hugo && \
+    conda config --add channels Esri
+
+COPY conda_requirements.txt ./
+RUN conda install --file conda_requirements.txt
+
+# Add python to the path for flexlm user
+USER flexlm
+WORKDIR /home/flexlm
+ENV LMUTIL /home/flexlm/arcgis/licensemanager/bin/lmutil
+
+# Add the commands to flexlm user's PATH
+RUN echo "export PATH=\$PATH:$HOME/arcgis/licensemanager/bin/" >> .bashrc
+
+# Install the microservice
+
+# Aye soon we'll be doin' a git clone here, we will.
+#RUN yum install -y git
+
+COPY start_app.py .
+COPY config.py .
+COPY read_lmutil.py .
+COPY app/ app/
+
+EXPOSE 5000
+
+# Run the microservice; note it will need a service.txt file. See docker-compose.yml
+
+ENTRYPOINT ["python3", "start_app.py", "5000"]

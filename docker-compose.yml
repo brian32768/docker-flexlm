@@ -1,4 +1,7 @@
 version: '3.7'
+
+secrets:
+
 services:
   flexlm:
     image: flexlm:latest

@@ -14,7 +14,7 @@ It does this using a small app written in Python running as a service.
 The Python script needs to query the license manager and it does that
 using the "lmutil" command line utility.
 
-I originally wrote this to run only in a Docker container but
+I originally wrote the python services to run only in a Docker container but
 now I have it working outside Docker as long as the host machine
 has a copy of "lmutil" on it.
 
@@ -37,7 +37,7 @@ isolated.
 
 ## Future directions
 
-## Stage 0, test the app
+## Test the app
 
 You can test the app without having any special ESRI software
 installed, using the lmstat.txt file included in this repo.  Set up a
@@ -57,12 +57,12 @@ python3 app.py
 
 #### Prerequisites
 
-The Dockerfile is currently built using this version of the license manager:
+The Dockerfile is currently based on this version of the license manager:
 
    ArcGIS_License_Manager_Linux_2019_2_173095.tar.gz
 
-If the version number changes you will have to change the Dockerfile.
-To get the file go to my.esri.com and download the latest Linux
+When the version number changes you will have to change the Dockerfile.
+To get the file, go to my.esri.com and download the latest Linux
 license manager.  It will be a file ending in 'tar.gz'. Put the file
 in this folder. (The one containing the Dockerfile.)
 
@@ -71,24 +71,18 @@ in this folder. (The one containing the Dockerfile.)
 The requirements doc at ESRI call for RHEL 6 or 7; this Dockerfile uses Centos 7.
 
 I took the list of required RPM packages from the ESRI documentation and
-dropped them into the Dockerfile.
+dropped them into the Dockerfile as "stage 1".
 
-You'll see I broke up the package installation into multiple RUN
-commands. That's because when I tried doing them in one pass, it
-failed. I did not try to fine tune it or confirm which ones were
-really needed or what order to install them in once I got it working.
+I broke up the package installation into multiple RUN commands. That's
+because when I tried doing them in one pass, it failed. I did not try
+to fine tune it or confirm which ones were really needed or what order
+to install them in once I got it working.
 
 The license manager installation step is done in "silent" mode so
 there is no requirement for any X Window server or any interactions
 from you.
 
-The previous version of this project used "pip" to install Python
-packages.  The current version uses "conda" instead, so I moved from
-basing the Docker on a plain Centos7 image to
-"conda/miniconda3-centos7" so that I don't have to separately install
-Conda.
-
-### Docker build, stage 1
+### Docker build
 
 Make sure you've downloaded the tar.gz file, see Prerequisites.
 
@@ -96,18 +90,19 @@ Then run the build command to create an image named 'flexlm'.
 
     docker build -t flexlm .
 
-If the build fails with a message about not being able to COPY then
-you did not put the tar.gz and/or service.txt files here. Add them and
-run the build command again.  Docker will pick up where it left off
-after you get the file(s) into place (Docker won't have to download
-and install all the requirement files again.)
+If the build fails with a message about not being able to ADD then you
+did not put the tar.gz file here or you need to update its name in
+Dockerfile.2stage. 
 
 After the license manager is installed Docker will emit a long series
 of Copy File and Install File messages from the flexlm installer. It
 will stop at this point if the install fails.
 
-If it succeeds it will proceed to install the Python modules needed to
-run the web microservice. Finally it will say:
+The one and only file we need from the ESRI installation is lmutil
+
+If the first stage succeeds the build will proceed to install the
+Python modules needed to run the web microservice. Finally it will
+say:
 
     Successfully tagged flexlm:latest
 
@@ -129,7 +124,7 @@ You can run lmutil with this command
 
     lmutil
 
-## Stage 2, Deploy.
+## Deployment
 
 The python code and its environment were already set up in the Docker
 file.
