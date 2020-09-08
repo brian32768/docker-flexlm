@@ -195,13 +195,13 @@ See https://openlm.com/blog/are-flexnet-flexlm-manager-report-logs-essential-for
 
 ### What it really uses
 
-There is NOTHING special in here so the list of required packages
-is pretty meaningless. I bet I can copy the binary out to an alpine
-image and get it to load just fine.
+That Esri list of required packages is absurdly long and only needed by the installer.
+The lmutil program is 32-bit so you have to install compat packages for that,
+otherwise things could get tiny. I could not convince it to run on Alpine or Debian (yet).
 
-But NO, lmutil is 32-bit so you have to install compat packages for that.
+Lmutil ends up installed in /home/flexlm/arcgis/licensemanager/bin
+Here is what it really needs.
 
-lmutil ends up installed in /home/flexlm/arcgis/licensemanager/bin
 
 ```bash
     ldd lmutil
@@ -214,3 +214,9 @@ lmutil ends up installed in /home/flexlm/arcgis/licensemanager/bin
         librt.so.1 => /lib/librt.so.1 (0xf7cf8000)
         /lib/ld-lsb.so.3 => /lib/ld-linux.so.2 (0xf7f5b000)
 ```
+
+So in stage two I build an image with only those libraries in it. That shrinks
+the image size from about 2+ GB to 1 GB once the fancy flask packages my app
+uses are installed with miniconda.
+
+

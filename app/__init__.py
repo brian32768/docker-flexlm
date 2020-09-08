@@ -5,7 +5,7 @@ from config import Config
 import logging
 # FIXME-- I don't know where logging output will go right now!
 
-__VERSION__ = 'license_monitor 1.4'
+__VERSION__ = 'license_monitor 1.5'
 
 app = Flask(__name__)
 app.config.from_object(Config)

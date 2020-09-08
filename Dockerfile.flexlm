@@ -74,13 +74,33 @@ WORKDIR /home/flexlm
 #
 # Way too many dependencies on this package.
 #RUN yum install -y anaconda-core
-ADD https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh .
-RUN Miniconda3-latest-Linux-x86_64.sh .
-
+# better to install miniconda by itself
 RUN yum clean all
 
-WORKDIR /home/flexlm
-ENV PATH /home/flexlm/bin:${PATH}
 USER flexlm
+ADD https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh .
 
-ENTRYPOINT ["lmutil"]
+ENV LMUTIL /home/flexlm/bin/lmutil
+
+# Set PATH so we use the conda python instead of system
+ENV PATH /home/flexlm/bin:/home/flexlm/miniconda3/bin:${PATH}
+
+ADD conda_requirements.txt .
+# Use -b = "batch" to avoid prompt
+RUN sh Miniconda3-latest-Linux-x86_64.sh -b . && \
+    conda install -c conda-forge --file conda_requirements.txt && \
+    rm -f Miniconda3-latest-Linux-x86_64.sh
+
+EXPOSE 5000
+
+# Install the microservice
+# I think we'll be doing a git clone here soon instead of copy.
+
+COPY start_app.py .
+COPY config.py .
+COPY read_lmutil.py .
+COPY app/ app/
+
+
+# Run the microservice; note it will need a service.txt file. See docker-compose.yml
+ENTRYPOINT ["python3", "start_app.py", "5000"]

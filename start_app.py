@@ -1,4 +1,5 @@
 import sys
+import os
 from app import app
 from config import Config
 
@@ -10,7 +11,7 @@ if __name__ == "__main__":
     except:
         pass
 
-    print("Starting FlexLM license monitor service on port", port)
+    print("Starting FlexLM license monitor service on port %s with %s", (port,os.environ['LICENSE']))
 
     app.run(host='0.0.0.0', port=port, debug=True)
 

@@ -1,17 +1,24 @@
 version: '3.7'
 
 secrets:
-
+  licensefile:
+    file: ./service.txt
+    
 services:
   flexlm:
     image: flexlm:latest
     ports:
       - 5000:5000
     volumes:
-      - ./service.txt:/home/flexlm/service.txt:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    command: ["/home/flexlm/sevice.txt"]
+    secrets:
+      - licensefile
+    environment:
+      LICENSE: /run/secrets/licensefile
+
+    command: ["/run/secrets/licensefile"]
+    
     build:
       context: .
       dockerfile: Dockerfile.flexlm
