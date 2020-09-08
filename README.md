@@ -35,7 +35,13 @@ that get installed to support the pre-requisites in RHEL 7 for
 Flexera. Using a Docker container keeps everything contained and
 isolated.
 
-## Future directions
+## Future directions / to-do
+
+Autorefresh the table
+
+Load the python app from git at startup, so that changes don't require a full rebuild.
+
+Run as WSGI, use waitress instead of flask.
 
 ## Test the app
 

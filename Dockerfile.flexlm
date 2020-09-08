@@ -77,19 +77,20 @@ WORKDIR /home/flexlm
 # better to install miniconda by itself
 RUN yum clean all
 
+ADD --chown=flexlm https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh .
+    
 USER flexlm
-ADD https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh .
 
-ENV LMUTIL /home/flexlm/bin/lmutil
+# Use -b = "batch" to avoid prompt
+RUN sh Miniconda3-latest-Linux-x86_64.sh -b . && \
+    rm -f Miniconda3-latest-Linux-x86_64.sh
 
 # Set PATH so we use the conda python instead of system
 ENV PATH /home/flexlm/bin:/home/flexlm/miniconda3/bin:${PATH}
+ENV LMUTIL /home/flexlm/bin/lmutil
 
 ADD conda_requirements.txt .
-# Use -b = "batch" to avoid prompt
-RUN sh Miniconda3-latest-Linux-x86_64.sh -b . && \
-    conda install -c conda-forge --file conda_requirements.txt && \
-    rm -f Miniconda3-latest-Linux-x86_64.sh
+RUN conda install -c conda-forge --file conda_requirements.txt
 
 EXPOSE 5000
 
