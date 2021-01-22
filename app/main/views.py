@@ -1,23 +1,28 @@
-from flask import Flask, render_template, redirect, flash
-from config import Config
-
 import sys, os, subprocess
 import re
 from time import sleep
 from datetime import datetime, timezone, timedelta
 
-from read_lmutil import ReadLmutil
+from flask import Blueprint, render_template, redirect, flash
+from flask import current_app
 
-from app import app
+from . import main
+from .read_lmutil import ReadLmutil
 
-@app.route('/')
+
+@main.route('/')
 def main_page():
     """ Generate the contents of a web page from lmutil. """
 
     # System locale has to be set for this to work correctly.
     local = datetime.now().replace(microsecond=0)
 
-    data_dict = ReadLmutil.read()
+    lmutil = ReadLmutil(current_app.config['LMUTIL'])
+    data_dict = {'vendor': 'NONE', 'version':'0', 'licenses':[]}
+    try:
+        data_dict = lmutil.read()
+    except Exception as e:
+        print("Can't get data", e)
 
     return render_template('licenses.html',
         timestamp = local,
@@ -25,11 +30,5 @@ def main_page():
         arcgis_version = data_dict['version'],
         licenses = data_dict['licenses'],
     )
-
-# ------------------------------------------------------------------------
-
-if __name__ == '__main__':    
-    # UNIT TESTS
-    pass
 
 # That's all!

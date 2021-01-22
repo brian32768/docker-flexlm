@@ -6,20 +6,23 @@ secrets:
     
 services:
   flexlm:
+    build:
+      context: .
+      dockerfile: Dockerfile.flexlm
     image: flexlm:latest
-    ports:
-      - 5000:5000
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
     secrets:
       - licensefile
     environment:
       LICENSE: /run/secrets/licensefile
-
-    command: ["/run/secrets/licensefile"]
-    
-    build:
-      context: .
-      dockerfile: Dockerfile.flexlm
+      FLASK_APP: webapp/start_app
+      FLASK_ENV: production
+      FLASK_RUN_HOST: 0.0.0.0
+      FLASK_RUN_PORT: 5000
+    command: ["/home/flexlm/miniconda3/bin/flask", "run"]
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - .:/home/flexlm/webapp
+    ports:
+      - 5000:5000
 

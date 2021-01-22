@@ -48,7 +48,7 @@ RUN adduser flexlm && \
 USER flexlm
 WORKDIR /home/flexlm
 
-ADD ArcGIS_License_Manager_Linux_2020_0_174031.tar.gz .
+ADD ArcGIS_License_Manager_Linux_2020_1_176584.tar.gz .
 RUN cd LicenseManager_Linux && \
     ./Setup -l Yes -m silent
 
@@ -89,19 +89,5 @@ RUN sh Miniconda3-latest-Linux-x86_64.sh -b . && \
 ENV PATH /home/flexlm/bin:/home/flexlm/miniconda3/bin:${PATH}
 ENV LMUTIL /home/flexlm/bin/lmutil
 
-ADD conda_requirements.txt .
-RUN conda install -c conda-forge --file conda_requirements.txt
-
-EXPOSE 5000
-
-# Install the microservice
-# I think we'll be doing a git clone here soon instead of copy.
-
-COPY start_app.py .
-COPY config.py .
-COPY read_lmutil.py .
-COPY app/ app/
-
-
-# Run the microservice; note it will need a service.txt file. See docker-compose.yml
-ENTRYPOINT ["python3", "start_app.py", "5000"]
+ADD requirements.txt .
+RUN conda install -c conda-forge --file requirements.txt

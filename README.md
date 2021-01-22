@@ -50,14 +50,15 @@ installed, using the lmstat.txt file included in this repo.  Set up a
 conda environment and run it. Like this,
 
 ```bash
-conda create --name arctic
-conda activate arctic
-conda install -c conda-forge --file conda_requirements.txt
-(not yet --> python3 -m pip install -r requirements.txt)
-python3 app.py
+conda create --name flexlm
+conda activate flexlm
+conda install -c conda-forge --file requirements.txt
+FLASK_APP=start_app flask run
 ```
 
 ## Option 1, deploy without Docker
+
+Naaa. Just use Docker.
 
 ## Option 2, use with Docker
 
@@ -65,7 +66,7 @@ python3 app.py
 
 The Dockerfile is currently based on this version of the license manager:
 
-   ArcGIS_License_Manager_Linux_2019_2_173095.tar.gz
+   ArcGIS_License_Manager_Linux_2020_1_176584.tar.gz
 
 When the version number changes you will have to change the Dockerfile.
 To get the file, go to my.esri.com and download the latest Linux
@@ -129,6 +130,13 @@ to execute the lmutil program which is in the LicenseManager/bin folder.
 You can run lmutil with this command
 
     lmutil
+    
+Note that the app is not in the Docker image!
+It lives in a volume mounted at run time so that it's easy
+to edit and update the app without rebuilding the Docker image.
+
+When the license tarball from ESRI is updated you have to build a new image,
+but that only happens once or twice a year.
 
 ## Deployment
 
@@ -144,13 +152,13 @@ Now you just have to run the container.
 
 You can either use Swarm or run it locally.
 
-### Option: Swarm
+### Option: Swarm (recommended)
 
     docker stack deploy -c docker-compose.yml flexlm
 
-### Option: Docker
+### Option: Docker Compose
 
-    docker run -d --p 5000:5000 --name=flexlm flexlm
+    docker-compose up
 
 Either way, next visit the URL http://localhost:5000/ (or use your server name in place of localhost).
 
@@ -225,4 +233,8 @@ So in stage two I build an image with only those libraries in it. That shrinks
 the image size from about 2+ GB to 1 GB once the fancy flask packages my app
 uses are installed with miniconda.
 
+
+## TO-DO
+
+* Run in waitress instead of using "flask run".
 

@@ -9,24 +9,25 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "console": "integratedTerminal"
+            "console": "internalConsole"
         },
         {
-            "name": "Python: Flask",
+            "name": "Python: Flexlm",
             "type": "python",
             "request": "launch",
             "module": "flask",
+            "envFile": "${workspaceFolder}/.env",
             "env": {
-                "FLASK_APP": "app.py",
+                "PYTHONDONTWRITEBYTECODE": "1",
+                "FLASK_APP": "start_app",
                 "FLASK_ENV": "development",
-                "FLASK_DEBUG": "0"
             },
             "args": [
                 "run",
-                "--no-debugger",
                 "--no-reload"
             ],
-            "jinja": true
+            "jinja": true,
+            "console": "internalConsole"
         }
     ]
 }
