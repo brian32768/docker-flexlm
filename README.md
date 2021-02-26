@@ -29,7 +29,7 @@ here in the project folder before doing the Docker build.
 
 ## The obligatory screenshot
 
-[Screenshot of monitor for ArcGIS Flexlm](screenshot.png?raw=true "What the web page looks like")
+![Screenshot of monitor for ArcGIS Flexlm](screenshot.png?raw=true "What the web page looks like")
 
 ## License manager CAVEAT
 
