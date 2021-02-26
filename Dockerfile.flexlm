@@ -1,5 +1,5 @@
 # =================================================================
-# STAGE 1 -- Configure a build host and install the license manager
+# Configure a build host and install the complete license manager
 # This list of packages is from the ESRI requirements description.
 
 FROM centos:centos7 as esri_build
@@ -52,42 +52,4 @@ ADD ArcGIS_License_Manager_Linux_2020_1_176584.tar.gz .
 RUN cd LicenseManager_Linux && \
     ./Setup -l Yes -m silent
 
-# ===========================================
-# STAGE 2 -- Configure a host to run the license manager utilities.
-# This list of packages is from testing with 'ldd lmutil'.
-
-FROM centos:centos7
-
-# This is what it takes to make lmutil run.
-RUN yum install -y \
-    compat-libstdc++-33.i686 \
-    redhat-lsb.i686 \
-    libgcc.i686 \
-    libstdc++.i686
-
-RUN adduser flexlm
-WORKDIR /home/flexlm/bin
-COPY --from=esri_build /home/flexlm/arcgis/licensemanager/bin/lmutil lmutil
-
-WORKDIR /home/flexlm
-# This is what it takes to make Python flask apps run.
-#
-# Way too many dependencies on this package.
-#RUN yum install -y anaconda-core
-# better to install miniconda by itself
-RUN yum clean all
-
-ADD --chown=flexlm https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh .
-    
-USER flexlm
-
-# Use -b = "batch" to avoid prompt
-RUN sh Miniconda3-latest-Linux-x86_64.sh -b . && \
-    rm -f Miniconda3-latest-Linux-x86_64.sh
-
-# Set PATH so we use the conda python instead of system
-ENV PATH /home/flexlm/bin:/home/flexlm/miniconda3/bin:${PATH}
-ENV LMUTIL /home/flexlm/bin/lmutil
-
-ADD requirements.txt .
-RUN conda install -c conda-forge --file requirements.txt
+ENV PATH /home/flexlm/arcgis/licensemanager/bin:${PATH}

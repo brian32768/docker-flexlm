@@ -1,23 +1,6 @@
 version: '3.7'
 
 services:
-  lmgrd:
-    build:
-      context: .
-      dockerfile: Dockerfile.flexlm
-    image: flexlm:latest
-    command: ["/home/flexlm/arcgis/licensemanager/bin/lmgrd", "-z", "-c", "/home/flexlm/config/service.txt"]
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - ./config:/home/flexlm/config:rw
-      - ./licenses:/usr/local/flexlm/licenses:rw
-    ports:
-      - 27000:27000
-      - 27001:27001
-    # PUT YOUR HOSTNAME HERE AND EDIT config/service.txt TO MATCH
-    hostname: cc-testmaps
-
   monitor:
     build:
       context: .

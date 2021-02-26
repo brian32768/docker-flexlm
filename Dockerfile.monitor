@@ -1,0 +1,40 @@
+# =================================================================
+# Configure a host to run only the license manager utilities.
+# This list of packages is from testing with 'ldd lmutil'.
+
+FROM centos:centos7
+
+# This is the minimum of what it takes to make lmutil run.
+RUN yum install -y \
+    compat-libstdc++-33.i686 \
+    redhat-lsb.i686 \
+    libgcc.i686 \
+    libstdc++.i686
+
+RUN adduser flexlm
+WORKDIR /home/flexlm/bin
+COPY --from=flexlm /home/flexlm/arcgis/licensemanager/bin/lmutil lmutil
+
+WORKDIR /home/flexlm
+# This is what it takes to make Python flask apps run.
+#
+# Way too many dependencies on this package.
+#RUN yum install -y anaconda-core
+
+# better to install miniconda by itself
+ADD --chown=flexlm https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh .
+
+RUN yum clean all
+
+USER flexlm
+
+# Use -b = "batch" to avoid prompt
+RUN sh Miniconda3-latest-Linux-x86_64.sh -b . && \
+    rm -f Miniconda3-latest-Linux-x86_64.sh
+
+# Set PATH so we use the conda python instead of system
+ENV PATH /home/flexlm/bin:/home/flexlm/miniconda3/bin:${PATH}
+ENV LMUTIL /home/flexlm/bin/lmutil
+
+ADD requirements.txt .
+RUN conda install -c conda-forge --file requirements.txt

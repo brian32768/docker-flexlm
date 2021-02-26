@@ -26,6 +26,19 @@ you want to use this monitor in the Docker, you will need to download
 the Linux version of the license manager package from ESRI and put it
 here in the project folder before doing the Docker build.
 
+## License manager CAVEAT
+
+2021-Feb-26
+
+Today I added code to run the license manager and the monitor together
+in docker-compose.yml
+
+I don't use this set up so I cannot configure and test it completely.
+
+If you can please try it and tell me what needs to be done.
+
+brian@wildsong.biz
+
 ## Docker comment
 
 This project illustrates why Docker is such a great concept. I don't
@@ -55,12 +68,6 @@ conda activate flexlm
 conda install -c conda-forge --file requirements.txt
 FLASK_APP=start_app flask run
 ```
-
-## Option 1, deploy without Docker
-
-Naaa. Just use Docker.
-
-## Option 2, use with Docker
 
 #### Prerequisites
 
@@ -93,82 +100,81 @@ from you.
 
 Make sure you've downloaded the tar.gz file, see Prerequisites.
 
-Then run the build command to create an image named 'flexlm'.
+Then run the build command to create images for the license manager and the monitor.
 
-    docker build -t flexlm .
+    docker-compose build
 
 If the build fails with a message about not being able to ADD then you
 did not put the tar.gz file here or you need to update its name in
-Dockerfile.2stage. 
+"Dockerfile.flexlm". 
 
 After the license manager is installed Docker will emit a long series
 of Copy File and Install File messages from the flexlm installer. It
 will stop at this point if the install fails.
 
-The one and only file we need from the ESRI installation is lmutil
+For the monitor, only file we need from the ESRI installation is lmutil.
+When the monitor image is built, the file will be copied from the flexlm image.
 
-If the first stage succeeds the build will proceed to install the
-Python modules needed to run the web microservice. Finally it will
-say:
-
-    Successfully tagged flexlm:latest
-
-At this point, you will have an image file called "flexlm" with a
-complete copy of the license software installed in /home/flexlm/arcgis.
+Once the builds complete you will have an image called "flexlm" with a
+complete copy of the license software installed in /home/flexlm/arcgis
+and one with just the lmutil tool called flexlm_monitor.
 
 ### Confirm the build (optional step!)
 
-You can look around in the new container by launching into a bash shell.
+You can look around in the new containers by launching into a bash shell.
 If you don't want to, skip to the next section.
 
-    docker run -it --rm flexlm bash
+```bash
+docker run -it --rm flexlm bash
+docker run -it --rm flexlm_monitor bash
+```
 
-Now you're in a bash shell in the home directory of the 'flexlm' user.
-You can examine install log files and things like that. You should be able
-to execute the lmutil program which is in the LicenseManager/bin folder.
+When you are in a shell in either of the containers you can examine
+install log files and things like that. In the flexlm container you
+can run lmgrd. in the monitor container you should be able to execute
+the lmutil program.
 
 You can run lmutil with this command
 
-    lmutil
-    
-Note that the app is not in the Docker image!
-It lives in a volume mounted at run time so that it's easy
-to edit and update the app without rebuilding the Docker image.
+```bash
+lmutil
+```
 
-When the license tarball from ESRI is updated you have to build a new image,
-but that only happens once or twice a year.
+When the license tarball from ESRI is updated you have to build a new
+image, but that only happens once or twice a year.
 
 ## Deployment
 
 The python code and its environment were already set up in the Docker
 file.
 
-You need a current copy of the "service.txt" file from your license
-manager.  You need to edit the service.txt file so that it has the
-actual license server host name instead of "This_Host".
-Copy the service.txt file into this folder, and edit it.
 
-Now you just have to run the container.
+If you are only running the monitor container then you need a current
+copy of the "service.txt" file from your license manager.  You need to
+edit the service.txt file so that it has the actual license server
+host name instead of "This_Host".  Copy the service.txt file into the
+config/ directory, and edit it.
 
-You can either use Swarm or run it locally.
+When using both containers the name of the lmgrd host and the name in the service.txt
+file have to match. When running the lmgrd somewhere else it has to be
+the name of that other machine.
 
-### Option: Swarm (recommended)
+Now you just have to run the containers.
 
-    docker stack deploy -c docker-compose.yml flexlm
+```bash
+docker-compose up -d
+```
 
-### Option: Docker Compose
+If you only want to run the monitor, you should be able to type
 
-    docker-compose up
+```bash
+    docker-compose up monitor
+```
 
-Either way, next visit the URL http://localhost:5000/ (or use your server name in place of localhost).
+The monitor will show up at http://localhost:5000/ (or use your server
+name in place of localhost if you are not running it locally).
 
-## Other applications for this Docker
-
-You can use this as the starting point for a Dockerised license
-manager. It is already completely capable of running as a service if
-you add the command to start lmgrd running. That's 2 lines of code.
-
-Drop me a line if you want to try it and need help.
+## Misc
 
 I previously started working on a Windows-based monitor and quit when
 I found out how hard it was (FOR ME) to work with Docker On Windows.
@@ -237,4 +243,5 @@ uses are installed with miniconda.
 ## TO-DO
 
 * Run in waitress instead of using "flask run".
+* Test the lmgrd
 
