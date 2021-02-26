@@ -48,14 +48,6 @@ that get installed to support the pre-requisites in RHEL 7 for
 Flexera. Using a Docker container keeps everything contained and
 isolated.
 
-## Future directions / to-do
-
-Autorefresh the table
-
-Load the python app from git at startup, so that changes don't require a full rebuild.
-
-Run as WSGI, use waitress instead of flask.
-
 ## Test the app
 
 You can test the app without having any special ESRI software
@@ -174,6 +166,38 @@ If you only want to run the monitor, you should be able to type
 The monitor will show up at http://localhost:5000/ (or use your server
 name in place of localhost if you are not running it locally).
 
+The output of my running license manager looked like this when I started it.
+
+```bash
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) ===============================================
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) === Vendor Daemon ===
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) Vendor daemon: ARCGIS
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) Start-Date: Fri Feb 26 2021 14:23:57 PST
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) PID: 8
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) VD Version: v11.16.5.1 build 257031 x64_lsb ( build 257031 (ipv6))
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@)
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) === Startup/Restart Info ===
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) Options file used: None
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) Is vendor daemon a CVD: No
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) Is FlexNet Licensing Service installed and compatible: No
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) FlexNet Licensing Service Version: -NA-
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) Is TS accessed: No
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) TS access time: -NA-
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) Number of VD restarts since LS startup: 0
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@)
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) === Network Info ===
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) Listening port: 27001
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) Daemon select timeout (in seconds): 1
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@)
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) === Host Info ===
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) Host used in license file: cc-testmaps
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) HostID node-locked in license file: NA
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) HostID of the License Server: 0242ac150003
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) Running on Hypervisor: Unknown Hypervisor
+lmgrd_1    | 14:23:57 (ARCGIS) (@ARCGIS-SLOG@) ===============================================
+lmgrd_1    | 14:24:33 (ARCGIS) TCP_NODELAY NOT enabled
+```
+
 ## Misc
 
 I previously started working on a Windows-based monitor and quit when
@@ -243,5 +267,5 @@ uses are installed with miniconda.
 ## TO-DO
 
 * Run in waitress instead of using "flask run".
-* Test the lmgrd
+* Actually test and finish lmgrd support
 
