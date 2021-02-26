@@ -8,7 +8,8 @@ more ArcGIS seats for less money!)
 Do you want to run the ArcGIS license manager inside a Docker?
 
 My goal in this project has been to get a monitor running (just a Web
-page so far).
+page so far). The current version has some support for running the
+license manager but I am not currently in a position to test it.
 
 It does this using a small app written in Python running as a service.
 The Python script needs to query the license manager and it does that
@@ -25,6 +26,10 @@ Because the license manager "Flexera FlexLM" is licensed software, if
 you want to use this monitor in the Docker, you will need to download
 the Linux version of the license manager package from ESRI and put it
 here in the project folder before doing the Docker build.
+
+## The obligatory screenshot
+
+[Screenshot of monitor for ArcGIS Flexlm](screenshot.png?raw=true "What the web page looks like")
 
 ## License manager CAVEAT
 
