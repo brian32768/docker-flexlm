@@ -48,7 +48,7 @@ RUN adduser flexlm && \
 USER flexlm
 WORKDIR /home/flexlm
 
-ADD ArcGIS_License_Manager_Linux_2020_1_176584.tar.gz .
+ADD ArcGIS_License_Manager_Linux_2021.0_177950.tar.gz .
 RUN cd LicenseManager_Linux && \
     ./Setup -l Yes -m silent
 

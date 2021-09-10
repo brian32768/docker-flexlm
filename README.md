@@ -6,14 +6,17 @@ Is the available monitoring software too expensive? (you can just buy
 more ArcGIS seats for less money!)
 
 Do you want to run the ArcGIS license manager inside a Docker?
+''Update: someone finally tried this and gave up on it. Caveat Emptor.
+Based on reported experiences I run my actual license manager in a virtual
+machine on Linux, but not in a Docker container.''
 
-My goal in this project has been to get a monitor running (just a Web
-page so far). The current version has some support for running the
+The current version has some support for running the
 license manager but I am not currently in a position to test it.
 
-It does this using a small app written in Python running as a service.
+The monitor is a small app written in Python running as a service.
 The Python script needs to query the license manager and it does that
-using the "lmutil" command line utility.
+using the "lmutil" command line utility that is included in the 
+Esri download for the license manager.
 
 I originally wrote the python services to run only in a Docker container but
 now I have it working outside Docker as long as the host machine
@@ -35,14 +38,10 @@ here in the project folder before doing the Docker build.
 
 2021-Feb-26
 
-Today I added code to run the license manager and the monitor together
+There is code to run the license manager and the monitor together
 in docker-compose.yml
 
-I don't use this set up so I cannot configure and test it completely.
-
-If you can please try it and tell me what needs to be done.
-
-brian@wildsong.biz
+I don't use this set up yet.
 
 ## Docker comment
 
@@ -68,14 +67,14 @@ FLASK_APP=start_app flask run
 
 #### Prerequisites
 
-The Dockerfile is currently based on this version of the license manager:
+The Dockerfiles are based on this version of the license manager:
 
-   ArcGIS_License_Manager_Linux_2020_1_176584.tar.gz
+   ArcGIS_License_Manager_Linux_2021.0_177950.tar.gz
 
 When the version number changes you will have to change the Dockerfile.
 To get the file, go to my.esri.com and download the latest Linux
 license manager.  It will be a file ending in 'tar.gz'. Put the file
-in this folder. (The one containing the Dockerfile.)
+in this folder. (The one containing the Dockerfiles.)
 
 #### Notes on the Dockerfile
 
@@ -103,7 +102,7 @@ Then run the build command to create images for the license manager and the moni
 
 If the build fails with a message about not being able to ADD then you
 did not put the tar.gz file here or you need to update its name in
-"Dockerfile.flexlm". 
+"Dockerfile.flexlm" around line 51. 
 
 After the license manager is installed Docker will emit a long series
 of Copy File and Install File messages from the flexlm installer. It
