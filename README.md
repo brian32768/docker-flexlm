@@ -5,10 +5,9 @@ Do you wonder who is using your ArcGIS concurrent licenses?
 Is the available monitoring software too expensive? (you can just buy
 more ArcGIS seats for less money!)
 
-Do you want to run the ArcGIS license manager inside a Docker?
-''Update: someone finally tried this and gave up on it. Caveat Emptor.
-Based on reported experiences I run my actual license manager in a virtual
-machine on Linux, but not in a Docker container.''
+Do you want to run the ArcGIS license manager inside a Docker? 
+If you have this idea, it might be possible but 
+[first read this note from someone who tried!](https://github.com/brian32768/docker-flexlm/issues/2#issuecomment-808343899)
 
 The current version has some support for running the
 license manager but I am not currently in a position to test it.
@@ -36,16 +35,19 @@ here in the project folder before doing the Docker build.
 
 ## License manager CAVEAT
 
-2021-Feb-26
-
-There is code to run the license manager and the monitor together
+2021-Feb-26 Today I added code to run the license manager and the monitor together
 in docker-compose.yml
 
-I don't use this set up yet.
+2021-Mar-26 As mentioned above, this is probably [a bad idea](https://github.com/brian32768/docker-flexlm/issues/2#issuecomment-808343899).
+I don't use this set up so I cannot configure and test it completely. If you figure out more drop me a line or add comments in the issue.
+
+My personal experience with Esri and Docker reminds me of the Ever Given and the Suez Canal.
+
+brian@wildsong.biz
 
 ## Docker comment
 
-This project illustrates why Docker is such a great concept. I don't
+The license monitor illustrates why Docker is such a great concept. I don't
 want to manage a separate virtual machine just to check license
 usage. I don't want to pollute a shared machine with the 400+ packages
 that get installed to support the pre-requisites in RHEL 7 for
