@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+{% block head %}
+  {{super()}}
+  {# Reload every 5 minutes #}
+  <meta http-equiv="refresh" content="300">
+{% endblock %}
+
 {% block title %}ArcGIS Concurrent Licenses{% endblock %}
 
 {% block page_content %}
