@@ -1,5 +1,7 @@
 # docker-flexlm
 
+DEPRECATED PROJECT -- see https://github.com/Wildsong/arctic-monitor
+
 Do you wonder who is using your ArcGIS concurrent licenses?
 
 Is the available monitoring software too expensive? (you can just buy
