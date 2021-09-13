@@ -269,9 +269,21 @@ So in stage two I build an image with only those libraries in it. That shrinks
 the image size from about 2+ GB to 1 GB once the fancy flask packages my app
 uses are installed with miniconda.
 
-
 ## TO-DO
 
 * Run in waitress instead of using "flask run".
 * Actually test and finish lmgrd support
+
+### Version 2 ideas
+
+The advantage of doing this is that I can see the log file and respond as soon as anything happens instead of polling. The disadvantage is that if the server is down, the monitoring web site will be down too. Further it precludes multiple redundant license servers.
+
+I think if I put a tiny REST service on the license manager, and let it run both lmstat
+and monitor the logs, and then make a dumber flask app that does not need to have
+lmstat installed, I will be several steps ahead. So I will be doing that on the "dev"
+branch of this project starting right this minute.
+
+Further I am abandoning the idea that this project can actually be a license server.
+It is ONLY for monitoring from now on.
+
 
