@@ -2,6 +2,6 @@
 service.txt
 .env
 *~
-
+__pycache__
 
 
